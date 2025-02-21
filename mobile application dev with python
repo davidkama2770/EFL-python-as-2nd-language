@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Synonym Finder</title>
+</head>
+<body>
+    <h1>Find a French Synonym</h1>
+    <form id="synonymForm">
+        <label for="word">English Word:</label>
+        <input type="text" id="word" name="word"><br><br>
+
+        <label for="formality">Formality:</label>
+        <select id="formality" name="formality">
+            <option value="">Any</option>
+            <option value="formal">Formal</option>
+            <option value="informal">Informal</option>
+        </select><br><br>
+
+        <label for="context">Context:</label>  <!-- Added context dropdown -->
+        <select id="context" name="context">
+            <option value="">Any</option>
+            <option value="joining">Joining</option>
+            <option value="metaphorical">Metaphorical</option>
+            <option value="effort">Effort</option>
+        </select><br><br>
+
+        <button type="submit">Find Synonym</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        const form = document.getElementById('synonymForm');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const word = document.getElementById('word').value;
+            const formality = document.getElementById('formality').value;
+            const context = document.getElementById('context').value;
+
+            const url = `/synonym?word=${word}&formality=${formality}&context=${context}`;  // Updated to pass context
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('result').innerHTML = `
+                        <p>Synonym: ${data.word}</p>
+                        <p>Description: ${data.description}</p>
+                    `;
+                } else {
+                    document.getElementById('result').innerHTML = `<p>${data.message || data.error}</p>`;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = `<p>Error: ${error}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
